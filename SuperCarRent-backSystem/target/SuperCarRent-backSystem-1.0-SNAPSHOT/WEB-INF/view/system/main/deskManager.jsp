@@ -1,11 +1,6 @@
-<%--
-  Created by IntelliJ IDEA.
-  User: 25760
-  Date: 2019/12/6
-  Time: 12:14
-  To change this template use File | Settings | File Templates.
---%>
-<%@ page language="java" contentType="text/html; charset=UTF-8" isELIgnored="false" pageEncoding="UTF-8" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ page contentType="text/html;charset=UTF-8" pageEncoding="UTF-8" language="java" isELIgnored="false" %>
+<c:set var="ctx" value="${pageContext.request.contextPath}"/>
 <!DOCTYPE html>
 <html>
 <head>
@@ -99,7 +94,7 @@
 
 
         //最新文章列表
-        $.get("${ctx}/news/loadAllNews.action?page=1&limit=10", function (data) {
+        $.get("${ctx}/system/news?method=loadAllNews&page=1&limit=10", function (data) {
             var hotNewsHtml = '';
             for (var i = 0; i < 5; i++) {
                 hotNewsHtml += '<tr ondblclick=viewNews(' + data.data[i].id + ')>'
@@ -114,7 +109,7 @@
     });
 
     function viewNews(id) {
-        $.get("${ctx}/news/loadNewsById.action", {id: id}, function (news) {
+        $.get("${ctx}/system/news?method=loadNewsById", {id: id}, function (news) {
             layer.open({
                 type: 1,
                 title: '查看公告',

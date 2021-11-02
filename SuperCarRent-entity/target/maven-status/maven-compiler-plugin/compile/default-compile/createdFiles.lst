@@ -1,4 +1,8 @@
-org\lhz\vo\SysMenuVo.class
+org\lhz\entity\SysRole.class
+org\lhz\vo\SysRoleVo.class
 org\lhz\entity\SysMenu.class
-org\lhz\entity\SysUser.class
 org\lhz\vo\SysUserVo.class
+org\lhz\vo\SysMenuVo.class
+org\lhz\entity\SysLogInfo.class
+org\lhz\vo\SysLogInfoVo.class
+org\lhz\entity\SysUser.class

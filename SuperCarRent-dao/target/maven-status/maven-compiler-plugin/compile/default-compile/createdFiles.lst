@@ -1,4 +1,8 @@
-org\lhz\dao\impl\SysMenuMapperImpl.class
 org\lhz\dao\SysUserMapper.class
+org\lhz\dao\impl\SysRoleMapperImpl.class
 org\lhz\dao\impl\SysUserMapperImpl.class
+org\lhz\dao\SysRoleMapper.class
+org\lhz\dao\impl\SysLogInfoMapperImpl.class
+org\lhz\dao\impl\SysMenuMapperImpl.class
+org\lhz\dao\impl\SysLogInfoMapper.class
 org\lhz\dao\SysMenuMapper.class

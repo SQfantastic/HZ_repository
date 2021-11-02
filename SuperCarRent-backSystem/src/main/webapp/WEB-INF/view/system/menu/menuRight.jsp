@@ -1,19 +1,14 @@
-<%--
-  Created by IntelliJ IDEA.
-  User: 25760
-  Date: 2019/12/6
-  Time: 15:59
-  To change this template use File | Settings | File Templates.
---%>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<c:set var="ctx" value="${pageContext.request.contextPath}"/>
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8">
     <link rel="stylesheet" href="${ctx}/resources/layui/css/layui.css">
-    <link rel="stylesheet" href="${ctx }/resources/css/public.css" media="all" />
-	<link rel="stylesheet" href="${ctx }/resources/layui_ext/dtree/dtree.css">
-	<link rel="stylesheet" href="${ctx }/resources/layui_ext/dtree/font/dtreefont.css">
+    <link rel="stylesheet" href="${ctx}/resources/css/public.css" media="all" />
+	<link rel="stylesheet" href="${ctx}/resources/layui_ext/dtree/dtree.css">
+	<link rel="stylesheet" href="${ctx}/resources/layui_ext/dtree/font/dtreefont.css">
     <style type="text/css">
 		.select-test{position: absolute;max-height: 500px;height: 350px;overflow: auto;width: 100%;z-index: 123;display: none;border:1px solid silver;top: 42px;}
 		.layui-show{display: block!important;}
@@ -34,8 +29,8 @@
 		      </div>
 		    </div>
 		    <div class="layui-inline">
-		      <button type="button" class="layui-btn layui-btn-normal  layui-icon layui-icon-search" id="doSearch">查询</button>
-		      <button type="reset" class="layui-btn layui-btn-warm  layui-icon layui-icon-refresh">重置</button>
+		      <button type="button" class="layui-btn layui-btn-normal  layui-icon layui-icon-search" lay-filter="doSearch" lay-submit="">查询</button>
+		      <button type="reset" class="layui-btn layui-btn-warm  layui-icon layui-icon-refresh" lay-filter="doSearch">重置</button>
 		    </div>
 	</div>
 </form>
@@ -65,6 +60,7 @@
             <div class="layui-input-block">
               <div class="layui-unselect layui-form-select" id="pid_div">
                 <div class="layui-select-title">
+<%--                    隐藏域，存放父节点的id--%>
                   <input type="hidden" name="pid" id="pid">
                   <input type="text" name="pid_str" id="pid_str" placeholder="请选择" readonly="" class="layui-input layui-unselect">
                   <i class="layui-edge"></i>
@@ -103,9 +99,9 @@
             </div>
         </div>
         <div class="layui-inline">
-            <label class="layui-form-label">TARGET:</label>
+            <label class="layui-form-label">菜单目标:</label>
             <div class="layui-input-inline">
-                <input type="text" name="target"  placeholder="请输入TRAGET"  autocomplete="off"
+                <input type="text" name="target"  placeholder="请输入菜单目标"  autocomplete="off"
                     class="layui-input">
             </div>
         </div>
@@ -157,7 +153,7 @@
 
         tableIns=table.render({
             elem: '#menuTable'    //渲染的目标数据
-            , url: '${ctx}/menu/loadAllMenu.action'  //数据接口
+            , url: '${ctx}/system/menu?method=loadAllMenu'  //数据接口
             , title: '用户数据表'  //数据导出来时的标题
             , toolbar: '#userToolBar'  //头部工具栏
             , height: 'full-150'
@@ -170,7 +166,7 @@
 			      ,{field:'spread', title:'是否展开',align:'center',width:'100',templet:function(d){
 			    	  return d.spread===1?'<font color=blue>展开</font>':'<font color=red>不展开</font>';
 			      }}
-			      ,{field:'target', title:'TARGET',align:'center',width:'100'}
+			      ,{field:'target', title:'菜单目标',align:'center',width:'100'}
 			      ,{field:'icon', title:'菜单图标',align:'center',width:'100',templet:function(d){
 			    	  return "<div class='layui-icon'>"+d.icon+"</div>";
 			      }}
@@ -180,25 +176,39 @@
 			      ,{fixed: 'right', title:'操作', toolbar: '#menuBar', width:180,align:'center'}
 			    ]]
             , page: true
-            , done: function (data, curr, count) {
-                    if (data.data.length == 0 && curr != 1) {
-                        tableIns.reload({
-                            page: {
-                                curr: curr - 1
-                         }
-                    })
+            , done: function (res, curr, count) {
+                //判断当前页码是否是大于1并且当前页的数据量为0
+                if (curr > 1 && res.data.length == 0) {
+                    var pageValue = curr - 1;
+                    //刷新数据表格的数据
+                    tableIns.reload({
+                        page: {curr: pageValue}
+                    });
                 }
             }
         });
-        //模糊查询
-        $("#doSearch").click(function(){
-            var params=$("#searchFrm").serialize();
-            alert(params);
-            tableIns.reload({
-                url:"${ctx}/menu/loadAllMenu.action?"+params
-            })
+        <%--//模糊查询--%>
+        <%--$("#doSearch").click(function(){--%>
+        <%--    var params=$("#searchFrm").serialize();--%>
+        <%--    alert(params);--%>
+        <%--    tableIns.reload({--%>
+        <%--        url:"${ctx}/system/menu?method=loadAllMenu"+params--%>
+        <%--    })--%>
 
-         });
+        <%-- });--%>
+
+        /*
+        * 模糊查询
+        * */
+        form.on('submit(doSearch)', function (data) {
+            tableIns.reload({
+                where: data.field,
+                page: {
+                    curr: 1
+                }
+            });
+            return false;
+        });
 
         //头工具栏事件
         table.on('toolbar(menuTable)', function (obj) {
@@ -219,12 +229,12 @@
             var data = obj.data;
             console.log(data);
             if (obj.event === 'del') {
-                $.post("${ctx}/menu/checkMenuHasChildren.action?id="+data.id,function(obj){
+                $.post("${ctx}/system/menu?method=checkMenuHasChildren&id="+data.id,function(obj){
                     if(obj.code>=0){
                         layer.msg("该节点有子节点，请先删除子节点！");
                      }else{
                         layer.confirm('真的删除行么?', function (index) {
-                            $.post("${ctx}/menu/DeleteMenu.action?id="+data.id,function(res){
+                            $.post("${ctx}/system/menu?method=deleteMenuById&id="+data.id,function(res){
                                 layer.msg(res.msg);
                                 //刷新数据 表格
                                 tableIns.reload();
@@ -250,7 +260,7 @@
         function openAddMenu() {
             mainIndex=layer.open({
                 type: 1,
-                title: "添加用户",
+                title: "添加菜单",
                 content: $("#saveOrUpdateDiv"),
                 area: ["800px",'450px'],
                 btnAlign: 'c',
@@ -259,7 +269,7 @@
                     $("#menuSelectDiv").removeClass("layui-show");
                     //将jquery对象转换为dom对象  [0]
                     $("#addMenuForm")[0].reset();
-                    url = "${ctx}/menu/addMenu.action";
+                    url = "${ctx}/system/menu?method=addMenu";
                 }
 
             })
@@ -269,7 +279,7 @@
         function openEditMenu(data) {
             mainIndex=layer.open({
                 type: 1,
-                title: "修改用户",
+                title: "修改菜单",
                 content: $("#saveOrUpdateDiv"),
                 area: ["800px",'450px'],
                 success: function (index) {
@@ -285,10 +295,11 @@
                     $("#pid_str").val(params.context);
                     //移除打开的样式
                     $("#menuSelectDiv").removeClass("layui-show");
-                    url = "${ctx}/menu/updateMenu.action";
+                    url = "${ctx}/system/menu?method=updateMenu";
                 }
             })
         }
+
 
         //监听保存事件
   	    form.on("submit(doSubmit)",function(obj){
@@ -313,7 +324,7 @@
               dataStyle: "layuiStyle",  //使用layui风格的数据格式
               response:{message:"msg",statusCode:0},  //修改response中返回数据的定义
               dataFormat: "list",  //配置data的风格为list
-              url: "${ctx}/menu/loadMenuManagerLeftTreeJson.action?spread=1",  // 使用url加载（可与data加载同时存在）
+              url: "${ctx}/system/menu?method=loadMenuManagerLeftTree",  // 使用url加载（可与data加载同时存在）
               icon: "2",
               accordion:true
         });
@@ -336,7 +347,7 @@
        //根据菜单树刷新数据表格
         function reloadTable(id){
             tableIns.reload({
-                url:"${ctx}/menu/loadAllMenu.action?id="+id
+                url:"${ctx}/system/menu?method=loadAllMenu&id="+id
             })
         }
 

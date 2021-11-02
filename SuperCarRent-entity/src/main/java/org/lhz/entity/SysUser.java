@@ -1,8 +1,12 @@
 package org.lhz.entity;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class SysUser {
 
     private Integer userid;
@@ -26,9 +30,6 @@ public class SysUser {
     private Integer type;
 
     private Integer available;
-
-    public SysUser() {
-    }
 
     public SysUser(String loginname, String pwd) {
         this.loginname = loginname;

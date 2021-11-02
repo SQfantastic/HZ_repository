@@ -1,3 +1,4 @@
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%--
   Created by IntelliJ IDEA.
   User: 25760
@@ -23,7 +24,8 @@
     <link rel="stylesheet" href="${ctx}/resources/css/public.css" media="all"/>
 </head>
 <body class="loginBody">
-<form class="layui-form" id="loginForm" action="${ctx}/user?method=login" method="post">
+<h2 style="color: #009688;text-align: center;font-size: 55px;font-weight: bold;padding-top: 50px">SuperCarRent汽车租赁系统</h2>
+<form class="layui-form" id="loginForm" action="${ctx}/system/user?method=login" method="post">
     <div class="login_face"><img src="${ctx}/resources/images/face.jpg" class="userAvatar"></div>
     <div class="layui-form-item input-item">
         <label for="loginname">用户名</label>
@@ -38,7 +40,7 @@
     <div class="layui-form-item input-item" id="imgCode">
         <label for="code">验证码</label>
         <input type="text" placeholder="请输入验证码" autocomplete="off" name="code" id="code" class="layui-input">
-        <img src="${ctx}/user?method=getCode&" onclick="javascript:this.src+=<%=Math.random()%>">
+        <img src="${ctx}/system/user?method=getCode&" onclick="javascript:this.src+=<%=Math.random()%>">
     </div>
     <div class="layui-form-item">
         <button class="layui-btn layui-block" lay-filter="login" lay-submit>登录</button>

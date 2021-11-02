@@ -22,8 +22,9 @@
     <link rel="stylesheet" href="${ctx}/resources/layui/css/layui.css" media="all"/>
     <link rel="stylesheet" href="${ctx}/resources/css/public.css" media="all"/>
 </head>
+<h2 style="color: #009688;text-align: center;font-size: 55px;font-weight: bold;padding-top: 50px">SuperCarRent汽车租赁系统</h2>
 <body class="loginBody">
-<form class="layui-form" id="loginForm" action="${ctx}/user?method=register" method="post">
+<form class="layui-form" id="loginForm" action="${ctx}/system/user?method=register" method="post">
     <div class="login_face"><img src="${ctx}/resources/images/face.jpg" class="userAvatar"></div>
     <div class="layui-form-item input-item">
         <label for="loginname">用户名</label>
@@ -58,7 +59,7 @@
             console.log(username);
             if (username.trim()!=null&& username.trim()!=""){
                 $.ajax({
-                    url:"user?method=checkUser",
+                    url:"${ctx}/system/user?method=checkUser",
                     data:{username:username},
                     dataType:"json",
                     type:"post",

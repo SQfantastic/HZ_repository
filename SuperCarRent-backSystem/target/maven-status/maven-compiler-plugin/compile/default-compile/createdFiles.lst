@@ -1,3 +1,7 @@
-org\lhz\controller\SysDeskController.class
-org\lhz\controller\SysMenuController.class
+org\lhz\controller\SysRoleController.class
+org\lhz\controller\PageControllerSystem.class
 org\lhz\controller\SysUserController.class
+org\lhz\controller\PageControllerBusiness.class
+org\lhz\controller\PageControllerStat.class
+org\lhz\controller\SysMenuController.class
+org\lhz\controller\SysLogInfoController.class

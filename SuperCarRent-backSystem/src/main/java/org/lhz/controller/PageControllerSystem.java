@@ -33,7 +33,22 @@ public class PageControllerSystem extends HttpServlet {
             case"toNewsManagerPage":
                 toNewsManagerPage(req,resp);
                 break;
+            case"toMenuLeft":
+                toMenuLeft(req,resp);
+                break;
+            case"toMenuRight":
+                toMenuRight(req,resp);
+                break;
         }
+    }
+
+    private void toMenuRight(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException{
+        req.getRequestDispatcher("WEB-INF/view/system/menu/menuRight.jsp").forward(req,resp);
+    }
+
+    private void toMenuLeft(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException{
+        req.getRequestDispatcher("WEB-INF/view/system/menu/menuLeft.jsp").forward(req,resp);
+
     }
 
     private void toNewsManagerPage(HttpServletRequest req, HttpServletResponse resp) throws ServletException ,IOException {
@@ -59,7 +74,7 @@ public class PageControllerSystem extends HttpServlet {
     }
 
     private void toMenuManagerPage(HttpServletRequest req, HttpServletResponse resp) throws ServletException,IOException{
-        req.getRequestDispatcher("WEB-INF/view/system/menuManager.jsp").forward(req,resp);
+        req.getRequestDispatcher("WEB-INF/view/system/menu/menuManager.jsp").forward(req,resp);
     }
 
 }

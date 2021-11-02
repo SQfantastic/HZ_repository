@@ -1,5 +1,6 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8"
-    pageEncoding="UTF-8"%>
+<%@ page language="java" contentType="text/html; charset=UTF-8"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<c:set var="ctx" value="${pageContext.request.contextPath}"/>
 <!DOCTYPE html>
 <html>
 <head>
@@ -31,11 +32,11 @@
 
 		 // 初始化树
 	    menuTree = dtree.render({
-	       elem: "#menuTree",
+	      elem: "#menuTree",
 		  dataStyle: "layuiStyle",  //使用layui风格的数据格式
 	      response:{message:"msg",statusCode:0},  //修改response中返回数据的定义
           dataFormat: "list",  //配置data的风格为list
-          url: "${ctx}/menu/loadMenuManagerLeftTreeJson.action?spread=1" // 使用url加载（可与data加载同时存在）
+          url: "${ctx}/system/menu?method=loadMenuManagerLeftTree" // 使用url加载（可与data加载同时存在）
 	    });
 
 		 //监听树的节点点击 事件

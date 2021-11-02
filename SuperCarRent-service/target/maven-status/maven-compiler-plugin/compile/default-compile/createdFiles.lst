@@ -1,4 +1,8 @@
+org\lhz\service\impl\SysLogInfoServiceImpl.class
+org\lhz\service\SysRoleService.class
+org\lhz\service\SysLogInfoService.class
+org\lhz\service\SysUserService.class
 org\lhz\service\impl\SysMenuServiceImpl.class
 org\lhz\service\SysMenuService.class
-org\lhz\service\SysUserService.class
+org\lhz\service\impl\SysRoleServiceImpl.class
 org\lhz\service\impl\SysUserServiceImpl.class

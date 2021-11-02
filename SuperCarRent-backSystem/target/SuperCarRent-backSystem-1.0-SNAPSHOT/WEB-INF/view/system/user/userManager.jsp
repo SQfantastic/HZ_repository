@@ -1,17 +1,12 @@
-<%--
-  Created by IntelliJ IDEA.
-  User: 25760
-  Date: 2019/12/6
-  Time: 15:59
-  To change this template use File | Settings | File Templates.
---%>
-<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ page contentType="text/html;charset=UTF-8" pageEncoding="UTF-8" language="java" isELIgnored="false" %>
+<c:set var="ctx" value="${pageContext.request.contextPath}"/>
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8">
     <link rel="stylesheet" href="${ctx}/resources/layui/css/layui.css">
-    <link rel="stylesheet" href="${ctx }/resources/css/public.css" media="all"/>
+    <link rel="stylesheet" href="${ctx}/resources/css/public.css" media="all"/>
 </head>
 <body class="childrenBody">
 
@@ -196,7 +191,7 @@
 
         tableIns = table.render({
             elem: '#userTable'    //渲染的目标数据
-            , url: '${ctx}/user/loadAllUser.action'  //数据接口
+            , url: '${ctx}/system/user?method=loadAllUser'  //数据接口
             , title: '用户数据表'  //数据导出来时的标题
             , toolbar: '#userToolBar'  //头部工具栏
             , height: 'full-250'
@@ -209,17 +204,17 @@
                 , {field: 'phone', title: '用户电话', align: 'center', width: '150'}
                 , {field: 'address', title: '用户地址', align: 'center', width: '160'}
                 , {
-                    field: 'sex', title: '性别', align: 'center', width: '80', templet: function (d) {
+                    field: 'sex', title: '性别', align: 'center', width: '70', templet: function (d) {
                         return d.sex == '1' ? '<font color=blue>男</font>' : '<font color=red>女</font>';
                     }
                 }
                 , {
-                    field: 'pwd', title: '密码', align: 'center', width: '80', templet: function (d) {
+                    field: 'pwd', title: '密码', align: 'center', width: '70', templet: function (d) {
                         return "******";
                     }
                 }
                 , {
-                    field: 'available', title: '是否可用', width: '100', align: 'center', templet: function (d) {
+                    field: 'available', title: '是否可用', width: '90', align: 'center', templet: function (d) {
                         return d.available == '1' ? '<font color=blue>可用</font>' : '<font color=red>不可用</font>';
                     }
                 }
@@ -239,9 +234,8 @@
         //模糊查询
         $("#doSearch").click(function () {
             var params = $("#searchFrm").serialize();
-            alert(params);
             tableIns.reload({
-                url: "${ctx}/user/loadAllUser.action?" + params,
+                url: "${ctx}/system/user?method=loadAllUser&" + params,
                 curr: 1
             })
 
@@ -267,7 +261,7 @@
             console.log(data);
             if (obj.event === 'del') {
                 layer.confirm('真的删除行么?', function (index) {
-                    $.post("${ctx}/user/deleteUser.action?userid=" + data.userid, function (res) {
+                    $.post("${ctx}/system/user?method=deleteUserById&userid=" + data.userid, function (res) {
                         layer.msg(res.msg);
                         //刷新数据 表格
                         tableIns.reload();
@@ -280,7 +274,7 @@
             } else if (obj.event === 'resetUserPwd') {
                 layer.confirm('真的重置【' + data.realname + '】这个用户的密码吗', function (index) {
                     //向服务端发送删除指令
-                    $.post("${ctx}/user/resetUserPwd.action", {userid: data.userid}, function (res) {
+                    $.post("${ctx}/system/user?method=resetUserPwd", {userid: data.userid}, function (res) {
                         layer.msg(res.msg);
                     })
                 });
@@ -303,7 +297,7 @@
                 success: function (index) {
                     //将jquery对象转换为dom对象  [0]
                     $("#addUserForm")[0].reset();
-                    url = "${ctx}/user/addUser.action";
+                    url = "${ctx}/system/user?method=addUser";
                 }
 
             })
@@ -319,7 +313,7 @@
                 success: function (index) {
                     //使用之间的数据填充表单
                     form.val('addUserForm', data);
-                    url = "${ctx}/user/updateUser.action";
+                    url = "${ctx}/system/user?method=updateUser";
                 }
             })
         }
@@ -350,7 +344,7 @@
                 }
             });
             layer.confirm('真的删除所有选中行么?', function (index) {
-                $.post("${ctx}/user/deleteBatchUser.action", params, function (res) {
+                $.post("${ctx}/system/user?method=deleteBatchUser", params, function (res) {
                     layer.msg(res.msg);
                     //刷新数据 表格
                     tableIns.reload();
@@ -368,13 +362,16 @@
                 btnAlign: 'c',
                 btn: ['<div class="layui-icon layui-icon-release">确认分配</div>', '<div class="layui-icon layui-icon-close">取消分配</div>'],
                 yes: function () {
-                    var checkStatus = table.checkStatus('roleTable');
-                    var roleData = checkStatus.data;
-                    var params = 'userid=' + data.userid;
-                    $.each(roleData, function (i, item) {
-                        params += '&ids=' + item.roleid;
-                    });
-                    $.post('${ctx}/user/saveUserRole.action', params, function (obj) {
+                    var params = table.checkStatus('roleTable');
+                    //定义集合，保存选中的值
+                    var idArr = [];
+                    //循环遍历
+                    for (let i = 0; i < params.length; i++) {
+                        idArr.push(params[i].nodeId);//nodeId是选中的节点值
+                    }
+                    //将数组转换成字符串
+                    var rids = idArr.join(",");
+                    $.post('${ctx}/system/user?method=grantUserRole',{"rids":rids,"userid":data.userid}, function (obj) {
                         layer.msg(obj.msg);
                     });
                 },
@@ -383,7 +380,7 @@
                 success: function (index) {
                     var tableIns = table.render({
                         elem: '#roleTable'    //渲染的目标数据
-                        , url: '${ctx}/user/loadUserRole.action?userid=' + data.userid  //数据接口
+                        , url: '${ctx}/system/user?method=loadUserRoleById&userid=' + data.userid  //数据接口
                         , title: '用户角色分配表'  //数据导出来时的标题
                         , cols: [[   //列表数据
                             {type: 'checkbox', fixed: 'left'}

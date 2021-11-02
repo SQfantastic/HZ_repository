@@ -1,11 +1,6 @@
-<%--
-  Created by IntelliJ IDEA.
-  User: 25760
-  Date: 2019/12/6
-  Time: 15:59
-  To change this template use File | Settings | File Templates.
---%>
-<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ page contentType="text/html;charset=UTF-8" pageEncoding="UTF-8" language="java" isELIgnored="false" %>
+<c:set var="ctx" value="${pageContext.request.contextPath}"/>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -88,7 +83,7 @@
 <%--弹出层开始--%>
 <%--修改和增加弹出层开始--%>
 <div style="display: none;padding: 20px" id="saveOrUpdateDiv">
-    <form class="layui-form" id="addRoleForm" action="" lay-filter="addRoleForm" method="post">
+    <form class="layui-form" id="addRoleForm" lay-filter="addRoleForm" method="post">
         <!-- 提示：如果你不想用form，你可以换成div等任何一个普通元素 -->
 
         <div class="layui-form-item">
@@ -118,8 +113,7 @@
         </div>
         <div class="layui-form-item" style="text-align: center;">
             <div class="layui-input-block">
-                <button type="button" class="layui-btn layui-btn-normal layui-btn-sm layui-icon layui-icon-release"
-                        lay-filter="doSubmit" lay-submit="">提交
+                <button type="button" class="layui-btn layui-btn-normal layui-btn-sm layui-icon layui-icon-release" lay-filter="doSubmit" lay-submit="">提交
                 </button>
                 <button type="reset" class="layui-btn layui-btn-warm layui-btn-sm layui-icon layui-icon-refresh">重置
                 </button>
@@ -151,7 +145,7 @@
 
         tableIns = table.render({
             elem: '#roleTable'    //渲染的目标数据
-            , url: '${ctx}/role/loadAllRole.action'  //数据接口
+            , url: '${ctx}/system/role?method=loadAllRole'  //数据接口
             , title: '角色数据表'  //数据导出来时的标题
             , toolbar: '#userToolBar'  //头部工具栏
             , height: 'full-150'
@@ -168,22 +162,22 @@
                 , {fixed: 'right', title: '操作', toolbar: '#roleBar', align: 'center'}
             ]]
             , page: true
-            , done: function (data, curr, count) {
-                if (data.data.length == 0 && curr != 1) {
+            , done: function (res, curr, count) {
+                //判断当前页码是否是大于1并且当前页的数据量为0
+                if (curr > 1 && res.data.length == 0) {
+                    var pageValue = curr - 1;
+                    //刷新数据表格的数据
                     tableIns.reload({
-                        page: {
-                            curr: curr - 1
-                        }
-                    })
+                        page: {curr: pageValue}
+                    });
                 }
             }
         });
         //模糊查询
         $("#doSearch").click(function () {
             var params = $("#searchFrm").serialize();
-            alert(params);
             tableIns.reload({
-                url: "${ctx}/role/loadAllRole.action?" + params,
+                url: "${ctx}/system/role?method=loadAllRole&" + params,
                 curr: 1
             })
 
@@ -209,7 +203,7 @@
             console.log(data);
             if (obj.event === 'del') {
                 layer.confirm('真的删除行么?', function (index) {
-                    $.post("${ctx}/role/DeleteRole.action?roleid=" + data.roleid, function (res) {
+                    $.post("${ctx}/system/role?method=deleteRoleById&roleid=" + data.roleid, function (res) {
                         layer.msg(res.msg);
                         //刷新数据 表格
                         tableIns.reload();
@@ -237,8 +231,9 @@
                 btnAlign: 'c',
                 success: function (index) {
                     //将jquery对象转换为dom对象  [0]
+                    url = "${ctx}/system/role?method=addRole";
                     $("#addRoleForm")[0].reset();
-                    url = "${ctx}/role/addRole.action";
+
                 }
 
             })
@@ -253,11 +248,13 @@
                 area: ["800px", '450px'],
                 success: function (index) {
                     //使用之间的数据填充表单
+                    url = "${ctx}/system/role?method=updateRole";
                     form.val('addRoleForm', data);
-                    url = "${ctx}/role/updateRole.action";
+
                 }
             })
         }
+
 
         //监听保存事件
         form.on("submit(doSubmit)", function (obj) {
@@ -306,12 +303,17 @@
                 btnAlign: 'c',
                 btn: ['<div class="layui-icon layui-icon-release">确认分配</div>', '<div class="layui-icon layui-icon-close">取消分配</div>'],
                 yes: function () {
-                    var nodes = dtree.getCheckbarNodesParam("menuTree");
-                    var params = 'roleid=' + data.roleid;
-                    $.each(nodes, function (i, item) {
-                        params += '&ids=' + item.nodeId;
-                    });
-                    $.post('${ctx}/role/saveRoleMenu.action', params, function (result) {
+                    var params = dtree.getCheckbarNodesParam("menuTree");
+                    //定义集合，保存选中的值
+                    var idArr = [];
+                    //循环遍历
+                    for (let i = 0; i < params.length; i++) {
+                        idArr.push(params[i].nodeId);//nodeId是选中的节点值
+                    }
+                    //将数组转换成字符串
+                    var ids = idArr.join(",");
+                    //发送请求
+                    $.post('${ctx}/system/role?method=grantRoleMenu', {"ids":ids,"roleid":data.roleid}, function (result) {
                         layer.msg(result.msg);
                     });
                 },
@@ -327,7 +329,7 @@
                         checkbar: true,
                         checkbarType: "all",
                         //这里加上roleid,初始化树复选框的选中状态
-                        url: "${ctx}/role/loadMenuDispatchJson.action?roleid=" + data.roleid // 使用url加载（可与data加载同时存在）
+                        url: "${ctx}/system/role?method=loadMenuDispatchTree&roleid=" + data.roleid // 使用url加载（可与data加载同时存在）
                     });
                 }
             })

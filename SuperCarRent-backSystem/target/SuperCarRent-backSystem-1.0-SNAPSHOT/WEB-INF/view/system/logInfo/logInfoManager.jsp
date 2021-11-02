@@ -1,17 +1,12 @@
-<%--
-  Created by IntelliJ IDEA.
-  User: 25760
-  Date: 2019/12/6
-  Time: 15:59
-  To change this template use File | Settings | File Templates.
---%>
-<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ page contentType="text/html;charset=UTF-8" pageEncoding="UTF-8" language="java" isELIgnored="false" %>
+<c:set var="ctx" value="${pageContext.request.contextPath}"/>
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8">
     <link rel="stylesheet" href="${ctx}/resources/layui/css/layui.css">
-    <link rel="stylesheet" href="${ctx }/resources/css/public.css" media="all"/>
+    <link rel="stylesheet" href="${ctx}/resources/css/public.css" media="all"/>
 </head>
 <body class="childrenBody">
 
@@ -97,7 +92,7 @@
 
         tableIns = table.render({
             elem: '#logInfoTable'    //渲染的目标数据
-            , url: '${ctx}/logInfo/loadAllLogInfo.action'  //数据接口
+            , url: '${ctx}/system/logInfo?method=loadAllLogInfo'  //数据接口
             , title: '日志数据表'  //数据导出来时的标题
             , toolbar: '#userToolBar'  //头部工具栏
             , height: 'full-200'
@@ -111,12 +106,12 @@
             ]]
             , page: true
             , done: function (data, curr, count) {
-                //不是第一页时如果当前返回的的数据为0那么就返回上一页
-                if (data.data.length == 0 && curr != 1) {
+                //判断当前页码是否是大于1并且当前页的数据量为0
+                if (curr > 1 && data.data.length == 0) {
+                    var pageValue = curr - 1;
+                    //刷新数据表格的数据
                     tableIns.reload({
-                        page: {
-                            curr: curr - 1
-                        }
+                        page: {curr: pageValue}
                     });
                 }
             }
@@ -124,9 +119,8 @@
         //模糊查询
         $("#doSearch").click(function () {
             var params = $("#searchFrm").serialize();
-            alert(params);
             tableIns.reload({
-                url: "${ctx}/logInfo/loadAllLogInfo.action?" + params,
+                url: "${ctx}/system/logInfo?method=loadAllLogInfo&" + params,
                 curr: 1
             })
 
@@ -149,7 +143,7 @@
             console.log(data);
             if (obj.event === 'del') {
                 layer.confirm('真的删除行么?', function (index) {
-                    $.post("${ctx}/logInfo/DeleteLogInfo.action?id=" + data.id, function (res) {
+                    $.post("${ctx}/system/logInfo?method=deleteLogInfo&id=" + data.id, function (res) {
                         layer.msg(res.msg);
                         //刷新数据 表格
                         tableIns.reload();
@@ -172,7 +166,7 @@
                 }
             });
             layer.confirm('真的删除所有选中行么?', function (index) {
-                $.post("${ctx}/logInfo/deleteBatchLogInfo.action", params, function (res) {
+                $.post("${ctx}/system/logInfo?method=deleteBatchLogInfo", params, function (res) {
                     layer.msg(res.msg);
                     //刷新数据 表格
                     tableIns.reload();

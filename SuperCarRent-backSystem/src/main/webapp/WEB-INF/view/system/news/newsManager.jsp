@@ -1,17 +1,12 @@
-<%--
-  Created by IntelliJ IDEA.
-  User: 25760
-  Date: 2019/12/6
-  Time: 15:59
-  To change this template use File | Settings | File Templates.
---%>
-<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ page contentType="text/html;charset=UTF-8" pageEncoding="UTF-8" language="java" isELIgnored="false" %>
+<c:set var="ctx" value="${pageContext.request.contextPath}"/>
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8">
     <link rel="stylesheet" href="${ctx}/resources/layui/css/layui.css">
-    <link rel="stylesheet" href="${ctx }/resources/css/public.css" media="all"/>
+    <link rel="stylesheet" href="${ctx}/resources/css/public.css" media="all"/>
 </head>
 <body class="childrenBody">
 
@@ -157,7 +152,7 @@
 
         tableIns = table.render({
             elem: '#newsTable'    //渲染的目标数据
-            , url: '${ctx}/news/loadAllNews.action'  //数据接口
+            , url: '${ctx}/system/news?method=loadAllNews'  //数据接口
             , title: '公告数据表'  //数据导出来时的标题
             , cellMinWidth: 100 //设置列的最小默认宽度
             , toolbar: '#userToolBar'  //头部工具栏
@@ -186,7 +181,7 @@
             var params = $("#searchFrm").serialize();
             alert(params);
             tableIns.reload({
-                url: "${ctx}/news/loadAllNews.action?" + params,
+                url: "${ctx}/system/news?method=loadAllNews" + params,
                 page: {curr: 1}
             })
 
@@ -212,7 +207,7 @@
             console.log(data);
             if (obj.event === 'del') {
                 layer.confirm('真的删除行么?', function (index) {
-                    $.post("${ctx}/news/DeleteNews.action?id=" + data.id, function (res) {
+                    $.post("${ctx}/system/news?method=deleteNews&id=" + data.id, function (res) {
                         layer.msg(res.msg);
                         //刷新数据 表格
                         tableIns.reload();
@@ -241,7 +236,7 @@
                 success: function (index) {
                     //将jquery对象转换为dom对象  [0]
                     $("#addNewsForm")[0].reset();
-                    url = "${ctx}/news/addNews.action";
+                    url = "${ctx}/system/news?method=addNews";
                 }
 
             })
@@ -258,7 +253,7 @@
 
                     //使用之间的数据填充表单
                     form.val('addNewsForm', data);
-                    url = "${ctx}/news/updateNews.action";
+                    url = "${ctx}/system/news?method=updateNews";
                 }
             })
         }
@@ -290,7 +285,7 @@
                 }
             });
             layer.confirm('真的删除所有选中行么?', function (index) {
-                $.post("${ctx}/news/deleteBatchNews.action", params, function (res) {
+                $.post("${ctx}/system/news?method=deleteBatchNews", params, function (res) {
                     layer.msg(res.msg);
                     //刷新数据 表格
                     tableIns.reload();

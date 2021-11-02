@@ -1,4 +1,6 @@
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ page contentType="text/html;charset=UTF-8" pageEncoding="UTF-8" language="java" isELIgnored="false" %>
+<c:set var="ctx" value="${pageContext.request.contextPath}"/>
 <!DOCTYPE html>
 <html>
 <head>
@@ -48,7 +50,7 @@
                                 class="layui-badge-dot"></span></a></dd>
                         <dd pc><a href="javascript:;" class="changeSkin"><i
                                 class="layui-icon">&#xe61b;</i><cite>更换皮肤</cite></a></dd>
-                        <dd><a href="${ctx}/Login/logout.action" class="signOut"><i
+                        <dd><a href="${ctx}/system/user?method=logout" class="signOut"><i
                                 class="seraph icon-tuichu"></i><cite>退出</cite></a></dd>
                     </dl>
                 </li>
@@ -73,7 +75,7 @@
         <div class="navBar layui-side-scroll" id="navBar">
             <ul class="layui-nav layui-nav-tree">
                 <li class="layui-nav-item layui-this">
-                    <a href="javascript:;" data-url="${ctx}/desk?method=toDeskManager"><i class="layui-icon"
+                    <a href="javascript:;" data-url="${ctx}/system?method=toDeskManager"><i class="layui-icon"
                                                                                           data-icon=""></i><cite>后台首页</cite></a>
                 </li>
             </ul>
@@ -130,7 +132,7 @@
         layer = parent.layer === undefined ? layui.layer : top.layer;
         tab = layui.bodyTab({
             openTabNum: "50",  //最大可打开窗口数量
-            url: "${ctx}/menu?method=loadIndexLeftMenu" //获取菜单json地址
+            url: "${ctx}/system/menu?method=loadIndexLeftMenu" //获取菜单json地址
         });
 
         //通过顶部菜单获取左侧二三级菜单   注：此处只做演示之用，实际开发中通过接口传参的方式获取导航数据
