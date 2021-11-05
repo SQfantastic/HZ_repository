@@ -68,4 +68,16 @@ public class SysRoleServiceImpl implements SysRoleService {
         }
         return false;
     }
+
+    /**
+     * Infor: 获取总数
+     * @param
+     * @return : java.lang.Long
+     * @author : LHZ
+     * @date : 2021/11/4 22:51
+     */
+    @Override
+    public Long getTotal() {
+        return null;
+    }
 }

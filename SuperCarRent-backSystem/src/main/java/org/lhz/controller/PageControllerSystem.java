@@ -39,7 +39,23 @@ public class PageControllerSystem extends HttpServlet {
             case"toMenuRight":
                 toMenuRight(req,resp);
                 break;
+            case"toProfileChangeManager":
+                toProfileChangeManager(req,resp);
+                break;
+            case"toPasswordChangeManager":
+                toPasswordChangeManager(req,resp);
+                break;
         }
+    }
+
+    private void toProfileChangeManager(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        req.getRequestDispatcher("WEB-INF/view/system/main/profileChange.jsp").forward(req,resp);
+
+    }
+
+    private void toPasswordChangeManager(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException{
+        req.getRequestDispatcher("WEB-INF/view/system/main/passwordChange.jsp").forward(req,resp);
+
     }
 
     private void toMenuRight(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException{

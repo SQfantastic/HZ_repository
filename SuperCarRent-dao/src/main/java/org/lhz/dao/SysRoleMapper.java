@@ -22,4 +22,6 @@ public interface SysRoleMapper {
     int insertRoleByUserId(Integer roleid ,Integer userid);
 
     int deleteRoleByUserId(Integer userid);
+
+    Long getTotal();
 }

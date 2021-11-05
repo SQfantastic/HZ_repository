@@ -159,11 +159,11 @@
             , height: 'full-200'
             , cols: [[   //列表数据
                 {type: 'checkbox', fixed: 'left'}
-                , {field: 'id', title: 'ID', align: 'center'}
-                , {field: 'title', title: '公告名称', align: 'center'}
-                , {field: 'createtime', title: '发布时间', align: 'center'}
-                , {field: 'opername', title: '发布人', align: 'center'}
-                , {fixed: 'right', title: '操作', toolbar: '#newsBar', align: 'center', width: 220,}
+                , {field: 'id', title: 'ID', align: 'center',width: '100'}
+                , {field: 'title', title: '公告名称', align: 'center',width: '500'}
+                , {field: 'createtime', title: '发布时间', align: 'center',width: '200'}
+                , {field: 'opername', title: '发布人', align: 'center',width: '200'}
+                , {fixed: 'right', title: '操作', toolbar: '#newsBar', align: 'center', width: 250,}
             ]]
             , page: true
             , done: function (data, curr, count) {
@@ -179,9 +179,8 @@
         //模糊查询
         $("#doSearch").click(function () {
             var params = $("#searchFrm").serialize();
-            alert(params);
             tableIns.reload({
-                url: "${ctx}/system/news?method=loadAllNews" + params,
+                url: "${ctx}/system/news?method=loadAllNews&" + params,
                 page: {curr: 1}
             })
 
@@ -248,7 +247,7 @@
                 type: 1,
                 title: "修改公告",
                 content: $("#saveOrUpdateDiv"),
-                area: ["800px", '300px'],
+                area: ["800px", '550px'],
                 success: function (index) {
 
                     //使用之间的数据填充表单
@@ -262,7 +261,6 @@
         form.on("submit(doSubmit)", function (obj) {
             //序列化表单数据
             var params = $("#addNewsForm").serialize();
-            alert(params);
             $.post(url, params, function (obj) {
                 layer.msg(obj.msg);
                 //关闭弹出层

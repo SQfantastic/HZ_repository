@@ -12,4 +12,6 @@ public interface SysLogInfoService {
     int addLogInfo(SysLogInfoVo sysLogInfoVo);//获取登录信息，并写入数据库中
 
     int deleteLogInfo(Integer id);//删除该登录信息
+
+    Long getTotal();//获取总数
 }

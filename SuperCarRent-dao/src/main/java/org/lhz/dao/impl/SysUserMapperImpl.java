@@ -3,6 +3,7 @@ package org.lhz.dao.impl;
 import org.apache.commons.dbutils.QueryRunner;
 import org.apache.commons.dbutils.handlers.BeanHandler;
 import org.apache.commons.dbutils.handlers.BeanListHandler;
+import org.apache.commons.dbutils.handlers.ScalarHandler;
 import org.lhz.dao.SysUserMapper;
 import org.lhz.entity.SysUser;
 import org.lhz.vo.SysUserVo;
@@ -101,15 +102,15 @@ public class SysUserMapperImpl implements SysUserMapper {
             }
             if (identity !=null&& !"".equals(identity)){
                 sql+=" and identity like ?";
-                paramsList.add(identity);
+                paramsList.add("%"+identity+"%");
             }
             if (address !=null&& !"".equals(address)){
                 sql+=" and address like ?";
-                paramsList.add(address);
+                paramsList.add("%"+address+"%");
             }
             if (phone !=null&& !"".equals(phone)){
                 sql+=" and phone like ?";
-                paramsList.add(phone);
+                paramsList.add("%"+phone+"%");
             }
             if (sex !=null){
                 sql+=" and sex = ? ";
@@ -181,5 +182,43 @@ public class SysUserMapperImpl implements SysUserMapper {
             e.printStackTrace();
         }
         return -1;
+    }
+
+    /**
+     * Infor: 通过用户id查询到用户信息
+     * @param userid
+     * @return : org.lhz.entity.SysUser
+     * @author : LHZ
+     * @date : 2021/11/4 0:14
+     */
+    @Override
+    public SysUser findUserByUserId(Integer userid) {
+        QueryRunner runner = new QueryRunner(DruidUtil.getDataSource());
+        try {
+            String  sql = "select * from sys_user where userid = ?";
+            return runner.query(sql,new BeanHandler<SysUser>(SysUser.class),userid);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    /**
+     * Infor: 获取用户总数
+     * @param
+     * @return : int
+     * @author : LHZ
+     * @date : 2021/11/4 22:39
+     */
+    @Override
+    public Long getTotal() {
+        QueryRunner runner = new QueryRunner(DruidUtil.getDataSource());
+        try {
+            String  sql = "select count(*) from sys_user ";
+            return runner.query(sql,new ScalarHandler<>());
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 }

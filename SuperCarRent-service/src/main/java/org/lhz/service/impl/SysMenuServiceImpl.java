@@ -73,4 +73,16 @@ public class SysMenuServiceImpl implements SysMenuService {
         return false;
     }
 
+    /**
+     * Infor: 获取总数
+     * @param
+     * @return : java.lang.Long
+     * @author : LHZ
+     * @date : 2021/11/4 23:02
+     */
+    @Override
+    public Long getTotal() {
+        return sysMenuMapper.getTotal();
+    }
+
 }

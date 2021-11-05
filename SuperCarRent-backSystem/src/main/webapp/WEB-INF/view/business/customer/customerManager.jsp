@@ -1,11 +1,5 @@
-<%--
-  Created by IntelliJ IDEA.
-  Customer: 25760
-  Date: 2019/12/6
-  Time: 15:59
-  To change this template use File | Settings | File Templates.
---%>
-<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ page contentType="text/html;charset=UTF-8" pageEncoding="UTF-8" language="java" isELIgnored="false" %>
 <c:set var="ctx" value="${pageContext.request.contextPath}"/>
 <!DOCTYPE html>
 <html lang="en">
@@ -172,7 +166,7 @@
 
         tableIns = table.render({
             elem: '#customerTable'    //渲染的目标数据
-            , url: '${ctx}/customer/loadAllCustomer.action'  //数据接口
+            , url: '${ctx}/customer?method=loadAllCustomer'  //数据接口
             , title: '客户数据表'  //数据导出来时的标题
             , toolbar: '#customerToolBar'  //头部工具栏
             , height: 'full-250'
@@ -205,9 +199,8 @@
         //模糊查询
         $("#doSearch").click(function () {
             var params = $("#searchFrm").serialize();
-            alert(params);
             tableIns.reload({
-                url: "${ctx}/customer/loadAllCustomer.action?" + params,
+                url: "${ctx}/customer?method=loadAllCustomer&" + params,
                 curr: 1
             })
 
@@ -233,7 +226,7 @@
             console.log(data);
             if (obj.event === 'del') {
                 layer.confirm('真的删除行么?', function (index) {
-                    $.post("${ctx}/customer/deleteCustomer.action?identity=" + data.identity, function (res) {
+                    $.post("${ctx}/customer?method=deleteCustomer&identity=" + data.identity, function (res) {
                         layer.msg(res.msg);
                         //刷新数据 表格
                         tableIns.reload();
@@ -251,6 +244,7 @@
 
         //打开添加页面
         function openAddCustomer() {
+            $('input[name="identity"]').prop("readonly",false),
             mainIndex = layer.open({
                 type: 1,
                 title: "添加客户",
@@ -260,7 +254,7 @@
                 success: function (index) {
                     //将jquery对象转换为dom对象  [0]
                     $("#addCustomerForm")[0].reset();
-                    url = "${ctx}/customer/addCustomer.action";
+                    url = "${ctx}/customer?method=addCustomer";
                 }
 
             })
@@ -276,7 +270,8 @@
                 success: function (index) {
                     //使用之间的数据填充表单
                     form.val('addCustomerForm', data);
-                    url = "${ctx}/customer/updateCustomer.action";
+                    $('input[name="identity"]').prop("readonly",true),
+                    url = "${ctx}/customer?method=updateCustomer";
                 }
             })
         }
@@ -307,7 +302,7 @@
                 }
             });
             layer.confirm('真的删除所有选中行么?', function (index) {
-                $.post("${ctx}/customer/deleteBatchCustomer.action", params, function (res) {
+                $.post("${ctx}/customer?method=deleteBatchCustomer",params, function (res) {
                     layer.msg(res.msg);
                     //刷新数据 表格
                     tableIns.reload();

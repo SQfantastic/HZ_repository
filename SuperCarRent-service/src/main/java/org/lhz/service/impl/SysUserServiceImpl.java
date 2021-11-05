@@ -9,7 +9,7 @@ import org.lhz.service.SysUserService;
 import org.lhz.vo.SysUserVo;
 import utils.SysTips;
 
-import javax.sound.sampled.AudioSystem;
+
 import java.util.List;
 import java.util.UUID;
 
@@ -110,5 +110,22 @@ public class SysUserServiceImpl implements SysUserService {
         sysUser.setUserid(userid);
         sysUser.setPwd(SecureUtil.md5(SysTips.USER_DEFAULT_PWD));
         return sysUserMapper.resetUserPwd(sysUser);
+    }
+
+    /**
+     * Infor: 根据用户id查询用户信息
+     * @param userid
+     * @return : org.lhz.entity.SysUser
+     * @author : LHZ
+     * @date : 2021/11/4 0:12
+     */
+    @Override
+    public SysUser findUserByUserId(Integer userid) {
+        return sysUserMapper.findUserByUserId(userid);
+    }
+
+    @Override
+    public Long getTotal() {
+        return sysUserMapper.getTotal();
     }
 }

@@ -4,6 +4,11 @@
 <!DOCTYPE html>
 <html>
 <head>
+<%--    防止推出之后回退到首页--%>
+    <script language="javaScript">
+        history.go(1)
+    </script>
+
     <meta charset="utf-8">
     <title>SuperCarRent汽车出租系统</title>
     <meta name="renderer" content="webkit">
@@ -40,10 +45,10 @@
                                                 width="35" height="35"><cite
                             class="adminName">${user.realname}</cite></a>
                     <dl class="layui-nav-child">
-                        <dd><a href="javascript:;" data-url="${ctx}/sys/toProfileChangeManager.action"><i class="seraph icon-ziliao"
+                        <dd><a href="javascript:;" data-url="${ctx}/system?method=toProfileChangeManager"><i class="seraph icon-ziliao"
                                                                                          data-icon="icon-ziliao"></i><cite>个人资料</cite></a>
                         </dd>
-                        <dd><a href="javascript:;" data-url="${ctx}/sys/toPasswordChangeManager.action"><i class="seraph icon-xiugai"
+                        <dd><a href="javascript:;" data-url="${ctx}/system?method=toPasswordChangeManager"><i class="seraph icon-xiugai"
                                                                                           data-icon="icon-xiugai"></i><cite>修改密码</cite></a>
                         </dd>
                         <dd pc><a href="javascript:;" class="functionSetting"><i class="layui-icon">&#xe620;</i><cite>功能设定</cite><span

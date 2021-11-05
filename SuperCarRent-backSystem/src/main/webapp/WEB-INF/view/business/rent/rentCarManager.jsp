@@ -1,3 +1,7 @@
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%--
+  汽车出租
+--%>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <c:set var="ctx" value="${pageContext.request.contextPath}"/>
 <!DOCTYPE html>
@@ -34,7 +38,7 @@
 <div style="display: none;" id="carTable_div">
     <table class="layui-hide" id="carTable" lay-filter="carTable"></table>
     <div style="display: none" id="carBar">
-        <a class="layui-btn layui-btn-warm layui-btn-xs" lay-event="carRent">车辆出租</a>
+        <a class="layui-btn layui-btn-warm layui-btn-xs" lay-event="carRent" id="rentcar">车辆出租</a>
         <a class="layui-btn layui-btn-xs" lay-event="viewImage">查看大图</a>
     </div>
     <%--数据表格结束--%>
@@ -89,7 +93,7 @@
             <div class="layui-inline">
                 <label class="layui-form-label">出租价格:</label>
                 <div class="layui-input-inline">
-                    <input type="text" name="price" autocomplete="off" lay-verify="required|number"
+                    <input type="text" name="price" autocomplete="off" lay-verify="required|number" id="price"
                            class="layui-input">
                 </div>
             </div>
@@ -150,28 +154,28 @@
         function showTable() {
             tableIns = table.render({
                 elem: '#carTable'    //渲染的目标数据
-                , url: '${ctx}/car/loadAllCar.action?isrenting=0'  //数据接口
+                , url: '${ctx}/business/car?method=loadAll'  //数据接口
                 , title: '车辆列表'  //数据导出来时的标题
                 , cols: [[   //列表数据
-                    {field: 'carnumber', title: '车牌号', align: 'center', width: '120'}
+                    {field: 'carnumber', title: '车牌号', align: 'center', width: '100'}
                     , {field: 'cartype', title: '车辆类型', align: 'center', width: '100'}
                     , {field: 'color', title: '车辆颜色', align: 'center', width: '100'}
-                    , {field: 'price', title: '购买价格', align: 'center', width: '120'}
-                    , {field: 'rentprice', title: '出租价格', align: 'center', width: '120'}
-                    , {field: 'deposit', title: '出租押金', align: 'center', width: '120'}
+                    , {field: 'price', title: '购买价格', align: 'center', width: '100'}
+                    , {field: 'rentprice', title: '出租价格', align: 'center', width: '100'}
+                    , {field: 'deposit', title: '出租押金', align: 'center', width: '100'}
                     , {
-                        field: 'isrenting', title: '出租状态', align: 'center', width: '80', templet: function (d) {
+                        field: 'isrenting', title: '出租状态', align: 'center', width: '100', templet: function (d) {
                             return d.isrenting == '1' ? '<font color=blue>已出租</font>' : '<font color=red>未出租</font>';
                         }
                     }
-                    , {field: 'description', title: '车辆描述', align: 'center', width: '180'}
+                    , {field: 'description', title: '车辆描述', align: 'center', width: '130'}
                     , {
-                        field: 'carimg', title: '缩略图', align: 'center', width: '80', templet: function (d) {
+                        field: 'carimg', title: '缩略图', align: 'center', width: '100', templet: function (d) {
                             return "<img width=40 height=40 src=${ctx}/file/downloadShowFile.action?path=" + d.carimg + "/>";
                         }
                     }
-                    , {field: 'createtime', title: '录入时间', align: 'center', width: '180'}
-                    , {fixed: 'right', title: '操作', toolbar: '#carBar', width: 220, align: 'center'}
+                    , {field: 'createtime', title: '录入时间', align: 'center', width: '160'}
+                    , {fixed: 'right', title: '操作', toolbar: '#carBar', width: '180', align: 'center'}
                 ]]
                 , page: true
             });
@@ -182,7 +186,7 @@
         //模糊查询
         $("#doSearch").click(function () {
             var params = $("#searchFrm").serialize();
-            $.post("${ctx}/rent/checkCustomerIsExist.action", params, function (obj) {
+            $.post("${ctx}/business/rent?method=checkIdNum", params, function (obj) {
                 if (obj.code >= 0) {
                     $("#carTable_div").show();
                     showTable();
@@ -237,7 +241,7 @@
                     var carnumber = data.carnumber;
                     var opername = data.opername;
                     var price = data.rentprice;
-                    $.get("${ctx}/rent/initAddRentForm.action",
+                    $.get("${ctx}/business/rent?method=rentSingle",
                         {
                             identity: identity,
                             carnumber: carnumber,
@@ -245,7 +249,6 @@
                             price: price
                         }, function (obj) {
                             form.val("addRentForm", obj);
-
                         })
                 }
 
@@ -256,7 +259,7 @@
         form.on("submit(doSubmit)", function (obj) {
             //序列化表单数据
             var params = $("#addRentForm").serialize();
-            $.post("${ctx}/rent/addRent.action", params, function (obj) {
+            $.post("${ctx}/business/rent?method=addRentSingle", params, function (obj) {
                 layer.msg(obj.msg);
                 //关闭弹出层
                 layer.close(mainIndex);
@@ -265,7 +268,9 @@
             })
         });
 
+
     });
+
 
 </script>
 </body>

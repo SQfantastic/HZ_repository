@@ -66,6 +66,8 @@ public class SysMenuMapperImpl implements SysMenuMapper {
         //获取需要动态查询的字段
         String title = sysMenuVo.getTitle();
         Integer id = sysMenuVo.getId();
+        Integer page = sysMenuVo.getPage();
+        Integer limit = sysMenuVo.getLimit();
         QueryRunner runner = new QueryRunner(DruidUtil.getDataSource());
         //为后面能够将参数和sql都交给preparedStatement对象来处理  将参数包装在一个集合中存储
         ArrayList<Object> paramsList = new ArrayList<>();
@@ -81,7 +83,7 @@ public class SysMenuMapperImpl implements SysMenuMapper {
                 paramsList.add(id);
                 paramsList.add(id);
             }
-            sql+=";";
+            sql+=" limit "+(page-1)*limit+","+limit;
             return  runner.query(sql, new BeanListHandler<SysMenu>(SysMenu.class),paramsList.toArray());
         } catch (SQLException e) {
             e.printStackTrace();
@@ -207,6 +209,26 @@ public class SysMenuMapperImpl implements SysMenuMapper {
             e.printStackTrace();
         }
         return -1;
+    }
+
+    /**
+     * Infor: 查询总数
+     * @param
+     * @return : java.lang.Long
+     * @author : LHZ
+     * @date : 2021/11/4 22:59
+     */
+    @Override
+    public Long getTotal() {
+        QueryRunner runner = new QueryRunner(DruidUtil.getDataSource());
+        try {
+            String sql = "select count(*) from sys_menu ";
+            //这里是个坑，queryrunner在query时只能返回一个Long类型的数值，需要转换一下
+            return runner.query(sql, new ScalarHandler<>());
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 
 }

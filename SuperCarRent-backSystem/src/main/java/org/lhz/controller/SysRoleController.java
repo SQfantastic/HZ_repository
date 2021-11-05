@@ -86,9 +86,8 @@ public class SysRoleController extends HttpServlet {
         //调用service层方法
         List<SysRole> roleList= sysRoleService.findAllRoleList(sysRoleVo);
         //设置分页参数
-        PageHelper.startPage(sysRoleVo.getPage(), sysRoleVo.getLimit());
-        PageInfo<SysRole> pageInfo = new PageInfo<>(roleList);
-        DataGridView dataGridView = new DataGridView(pageInfo.getTotal(), pageInfo.getList());
+        Long total = sysRoleService.getTotal();
+        DataGridView dataGridView = new DataGridView(total, roleList);
         //写出数据
         resp.setContentType("application/json;charset=utf-8");
         PrintWriter writer = resp.getWriter();

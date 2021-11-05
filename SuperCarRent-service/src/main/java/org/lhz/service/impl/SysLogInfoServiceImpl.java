@@ -1,6 +1,6 @@
 package org.lhz.service.impl;
 
-import org.lhz.dao.impl.SysLogInfoMapper;
+import org.lhz.dao.SysLogInfoMapper;
 import org.lhz.dao.impl.SysLogInfoMapperImpl;
 import org.lhz.entity.SysLogInfo;
 import org.lhz.service.SysLogInfoService;
@@ -25,5 +25,10 @@ public class SysLogInfoServiceImpl implements SysLogInfoService {
     @Override
     public int deleteLogInfo(Integer id) {
         return sysLogInfoMapper.deleteLogInfo(id);
+    }
+
+    @Override
+    public Long getTotal() {
+        return sysLogInfoMapper.getTotal();
     }
 }

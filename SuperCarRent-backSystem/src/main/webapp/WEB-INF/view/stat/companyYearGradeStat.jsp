@@ -1,11 +1,5 @@
-<%--
-  Created by IntelliJ IDEA.
-  User: 25760
-  Date: 2019/12/19
-  Time: 14:55
-  To change this template use File | Settings | File Templates.
---%>
-<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ page contentType="text/html;charset=UTF-8" pageEncoding="UTF-8" language="java" isELIgnored="false" %>
 <c:set var="ctx" value="${pageContext.request.contextPath}"/>
 <html>
 <head>
@@ -68,16 +62,23 @@
             if (year === '') {
                 year = new Date().getFullYear();
             }
-            $.get("${ctx}/stat/loadCompanyYearGradeStaticJson.action", {year: year}, function (data) {
+            $.get("${ctx}/stat/company?method=loadCompanyYearGradeStatic", {year: year}, function (data) {
 
                 var dom = document.getElementById("container");
                 var myChart = echarts.init(dom);
                 var app = {};
                 option = null;
                 option = {
+                    animationDuration: 3000,
                     title: {
                         text: '公司年度销售额统计',
-                        x: 'center'
+                        subtext: 'provided by LHZ',
+                        x: 'center',
+                        textStyle: {
+                            fontWeight: 'bold',
+                            fontSize: 26
+
+                        }
                     },
                     tooltip: {
                         trigger: 'axis',

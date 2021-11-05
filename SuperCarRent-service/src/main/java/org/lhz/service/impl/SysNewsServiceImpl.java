@@ -15,4 +15,29 @@ public class SysNewsServiceImpl implements SysNewsService {
     public List<SysNews> findAllNewsList(SysNewsVo sysNewsVo) {
         return sysNewsMapper.findAllNewsList(sysNewsVo);
     }
+
+    @Override
+    public SysNews findNewsById(Integer id) {
+        return sysNewsMapper.findNewsById(id);
+    }
+
+    @Override
+    public int deleteNewsById(Integer id) {
+        return sysNewsMapper.deleteNewsById(id);
+    }
+
+    @Override
+    public int addNews(SysNews sysNews) {
+        return sysNewsMapper.addNews(sysNews);
+    }
+
+    @Override
+    public int updateNews(SysNews sysNews) {
+        return sysNewsMapper.updateNews(sysNews);
+    }
+
+    @Override
+    public Long getTotal() {
+        return sysNewsMapper.getTotal();
+    }
 }

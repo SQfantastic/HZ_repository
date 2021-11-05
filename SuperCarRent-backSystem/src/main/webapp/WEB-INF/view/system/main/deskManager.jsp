@@ -4,7 +4,12 @@
 <!DOCTYPE html>
 <html>
 <head>
+    <%--    防止推出之后回退到首页--%>
+    <script language="javaScript">
+        history.go(1)
+    </script>
     <meta charset="utf-8">
+    <meta name="referrer" content="no-referrer" /><!--页面头部添加-->
     <title>工作台</title>
     <meta name="renderer" content="webkit">
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
@@ -43,7 +48,12 @@
     <div id="view_content"></div>
 </div>
 
+<%--右侧天气图--%>
+<iframe style=";width: 280px;height: 280px; position: absolute ;top: 80px;right: 30px" frameborder="0" scrolling="no" hspace="0"
+        src="https://i.tianqi.com/?c=code&a=getcode&id=55&icon=1"></iframe>
 
+<script src="${ctx}/resources/js/echarts.js"></script>
+<script src="${ctx}/resources/js/jquery-3.4.1.js"></script>
 <script type="text/javascript" src="${ctx}/resources/layui/layui.js"></script>
 <script type="text/javascript">
     //获取系统时间
@@ -96,7 +106,7 @@
         //最新文章列表
         $.get("${ctx}/system/news?method=loadAllNews&page=1&limit=10", function (data) {
             var hotNewsHtml = '';
-            for (var i = 0; i < 5; i++) {
+            for (var i = 0; i < data.data.length; i++) {
                 hotNewsHtml += '<tr ondblclick=viewNews(' + data.data[i].id + ')>'
                     + '<td align="left"><a href="javascript:;"> ' + data.data[i].title + '</a></td>'
                     + '<td>' + data.data[i].createtime.substring(0, 10) + '</td>'
@@ -110,11 +120,11 @@
 
     function viewNews(id) {
         $.get("${ctx}/system/news?method=loadNewsById", {id: id}, function (news) {
-            layer.open({
+            index=layer.open({
                 type: 1,
                 title: '查看公告',
                 content: $("#desk_viewNewsDiv"),
-                area: ['800px', '550px'],
+                area: ['1500px', '550px'],
                 success: function (index) {
                     $("#view_title").html(news.title);
                     $("#view_opername").html(news.opername);
@@ -122,8 +132,11 @@
                     $("#view_content").html(news.content);
                 }
             });
+            layer.full(index);
         })
     }
+
+
 
 
 </script>

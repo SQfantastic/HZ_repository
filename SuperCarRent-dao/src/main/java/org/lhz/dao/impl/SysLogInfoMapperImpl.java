@@ -2,6 +2,8 @@ package org.lhz.dao.impl;
 
 import org.apache.commons.dbutils.QueryRunner;
 import org.apache.commons.dbutils.handlers.BeanListHandler;
+import org.apache.commons.dbutils.handlers.ScalarHandler;
+import org.lhz.dao.SysLogInfoMapper;
 import org.lhz.entity.SysLogInfo;
 import org.lhz.vo.SysLogInfoVo;
 import utils.DruidUtil;
@@ -21,10 +23,13 @@ public class SysLogInfoMapperImpl implements SysLogInfoMapper {
      */
     @Override
     public List<SysLogInfo> findAllSysLoInfoList(SysLogInfoVo sysLogInfoVo) {
+        Integer limit = sysLogInfoVo.getLimit();
+        Integer page = sysLogInfoVo.getPage();
         String loginname = sysLogInfoVo.getLoginname();
         String loginip = sysLogInfoVo.getLoginip();
         Date startTime = sysLogInfoVo.getStartTime();
         Date endTime = sysLogInfoVo.getEndTime();
+        System.out.println(startTime);
         QueryRunner runner = new QueryRunner(DruidUtil.getDataSource());
         ArrayList<Object> paramsList = new ArrayList<>();
         try {
@@ -35,7 +40,7 @@ public class SysLogInfoMapperImpl implements SysLogInfoMapper {
             }
             if (loginip !=null&& !"".equals(loginip)){
                 sql+=" and loginip like ?";
-                paramsList.add(loginip);
+                paramsList.add("%"+loginip+"%");
             }
             if (startTime !=null){
                 sql+=" and logintime >= ?";
@@ -45,7 +50,7 @@ public class SysLogInfoMapperImpl implements SysLogInfoMapper {
                 sql+=" and logintime <= ?";
                 paramsList.add(endTime);
             }
-            sql+=";";
+            sql+=" limit "+(page-1)*limit+","+limit;
             return  runner.query(sql, new BeanListHandler<SysLogInfo>(SysLogInfo.class),paramsList.toArray());
         } catch (SQLException e) {
             e.printStackTrace();
@@ -92,5 +97,24 @@ public class SysLogInfoMapperImpl implements SysLogInfoMapper {
             e.printStackTrace();
         }
         return -1;
+    }
+
+    /**
+     * Infor: 查询总数
+     * @param
+     * @return : java.lang.Long
+     * @author : LHZ
+     * @date : 2021/11/4 23:05
+     */
+    @Override
+    public Long getTotal() {
+        QueryRunner runner = new QueryRunner(DruidUtil.getDataSource());
+        try {
+            String sql ="select count(*) from sys_log_login";
+            return runner.query(sql,new ScalarHandler<>());
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 }

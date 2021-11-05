@@ -155,7 +155,6 @@ public class SysUserController extends HttpServlet {
         if (code.equals(currentCode)) {
             String loginname = req.getParameter("loginname");
             String pwd = req.getParameter("pwd");
-            System.out.println(loginname+pwd);
             SysUser sysUser = new SysUser(loginname, pwd);
             SysUser user = sysUserService.findUserByUsernameAndPassword(sysUser);
             if (user != null) {
@@ -189,7 +188,9 @@ public class SysUserController extends HttpServlet {
      * @date : 2021/11/2 0:15
      */
     protected void logout(HttpServletRequest req, HttpServletResponse resp)  throws ServletException, IOException {
+        //清除session和参数
         req.getSession().invalidate();
+        req.getSession().removeAttribute("user");
         //重定向到登录页面
         resp.sendRedirect(req.getContextPath()+"/login.jsp");
 
@@ -260,9 +261,8 @@ public class SysUserController extends HttpServlet {
         //调用service层方法
         List<SysUser> userList= sysUserService.findAllUserList(sysUserVo);
         //设置分页参数
-        PageHelper.startPage(sysUserVo.getPage(), sysUserVo.getLimit());
-        PageInfo<SysUser> pageInfo = new PageInfo<>(userList);
-        DataGridView dataGridView = new DataGridView(pageInfo.getTotal(), pageInfo.getList());
+        Long total = sysUserService.getTotal();
+        DataGridView dataGridView = new DataGridView(total,userList);
         //写出数据
         resp.setContentType("application/json;charset=utf-8");
         PrintWriter writer = resp.getWriter();

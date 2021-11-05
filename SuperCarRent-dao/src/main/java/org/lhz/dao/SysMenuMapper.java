@@ -23,4 +23,6 @@ public interface SysMenuMapper {
     int insertMenuByRoleId(Integer roleid,Integer id);//根据角色id更新该角色下的菜单信息
 
     int deleteMenuByRoleId(Integer roleid);//根据角色id删除该角色下的所有菜单信息
+
+    Long getTotal();//查询总数
 }

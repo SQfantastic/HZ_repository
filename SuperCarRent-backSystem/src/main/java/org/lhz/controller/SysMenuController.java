@@ -1,8 +1,6 @@
 package org.lhz.controller;
 
 import com.alibaba.fastjson.JSON;
-import com.github.pagehelper.PageHelper;
-import com.github.pagehelper.PageInfo;
 import org.lhz.entity.SysMenu;
 import org.lhz.entity.SysUser;
 import org.lhz.service.SysMenuService;
@@ -85,7 +83,11 @@ public class SysMenuController extends HttpServlet {
         sysMenuVo.setAvailable(1);
         //根据不同的用户角色类型展示不同的首页信息，默认的1可以查询到所有的菜单信息
         //其他的用户根据id查询到对应的权限才是你信息
-        if (user.getType()==1) {
+        if(user==null){
+            //重定向到登录页面
+            resp.sendRedirect(req.getContextPath()+"/login.jsp");
+        }
+        else if (user.getType()==1) {
             menuList = sysMenuService.findAllMenuList(sysMenuVo);
         }else {
             menuList = sysMenuService.findMenuByUserId(user.getUserid());
@@ -167,14 +169,12 @@ public class SysMenuController extends HttpServlet {
             id = Integer.valueOf(idStr);
         }
         sysMenuVo.setId(id);
-        //设置分页参数
-        PageHelper.startPage(sysMenuVo.getPage(),sysMenuVo.getLimit());
+
         //查询所有的菜单数据，包括标头的模糊查询
         List<SysMenu> sysMenuList = sysMenuService.findAllMenu(sysMenuVo);
-        //创建一个pageInfo对象
-        PageInfo<SysMenu> pageInfo = new PageInfo<SysMenu>(sysMenuList);
+        Long total = sysMenuService.getTotal();
         //封装成layui对应的格式数据
-        DataGridView dataGridView = new DataGridView(pageInfo.getTotal(), pageInfo.getList());
+        DataGridView dataGridView = new DataGridView(total, sysMenuList);
         //写出数据
         resp.setContentType("application/json;charset=utf-8");
         PrintWriter writer = resp.getWriter();

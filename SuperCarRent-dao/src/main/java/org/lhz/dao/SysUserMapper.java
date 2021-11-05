@@ -20,4 +20,8 @@ public interface SysUserMapper {
     int updateUser(SysUser sysUser);//更新用户信息
 
     int resetUserPwd(SysUser sysUser);//重置用户的密码为默认值123456
+
+    SysUser findUserByUserId(Integer userid);//通过用户id查询到用户信息
+
+    Long getTotal();//获取信息总数
 }

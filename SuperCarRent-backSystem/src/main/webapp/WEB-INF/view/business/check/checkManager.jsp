@@ -1,11 +1,5 @@
-<%--
-  Created by IntelliJ IDEA.
-  Check: 25760
-  Date: 2019/12/6
-  Time: 15:59
-  To change this template use File | Settings | File Templates.
---%>
-<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" isELIgnored="false" %>
 <c:set var="ctx" value="${pageContext.request.contextPath}"/>
 <!DOCTYPE html>
 <html lang="en">
@@ -196,7 +190,7 @@
 
         tableIns = table.render({
             elem: '#checkTable'    //渲染的目标数据
-            , url: '${ctx}/check/loadAllCheck.action'  //数据接口
+            , url: '${ctx}/business/check?method=loadAllCheck'  //数据接口
             , title: '检查单数据表'  //数据导出来时的标题
             , toolbar: '#checkToolBar'  //头部工具栏
             , height: 'full-250'
@@ -218,7 +212,7 @@
         $("#doSearch").click(function () {
             var params = $("#searchFrm").serialize();
             tableIns.reload({
-                url: "${ctx}/check/loadAllCheck.action?" + params,
+                url: "${ctx}/business/check?method=loadAllCheck&" + params,
                 curr: 1
             })
 
@@ -249,7 +243,7 @@
                 success: function (index) {
                     //使用之间的数据填充表单
                     form.val('addCheckForm', data);
-                    url = "${ctx}/check/updateCheck.action";
+                    url = "${ctx}/business/check?method=updateCheck";
                 }
             })
         }

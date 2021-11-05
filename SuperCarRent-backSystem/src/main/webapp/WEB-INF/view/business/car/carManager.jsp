@@ -1,4 +1,5 @@
-<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" isELIgnored="false" %>
 <c:set var="ctx" value="${pageContext.request.contextPath}"/>
 <!DOCTYPE html>
 <html lang="en">
@@ -57,7 +58,7 @@
         <div class="layui-input-block">
             <button type="button" class="layui-btn layui-btn-normal  layui-icon layui-icon-search" id="doSearch">查询
             </button>
-            <button type="reset" class="layui-btn layui-btn-warm  layui-icon layui-icon-refresh">重置</button>
+            <button id="reset" type="reset" class="layui-btn layui-btn-warm  layui-icon layui-icon-refresh">重置</button>
         </div>
     </div>
 </form>
@@ -195,7 +196,7 @@
 
         tableIns = table.render({
             elem: '#carTable'    //渲染的目标数据
-            , url: '${ctx}/car/loadAllCar.action'  //数据接口
+            , url: '${ctx}/business/car?method=loadAll'  //数据接口
             , title: '车辆数据表'  //数据导出来时的标题
             , toolbar: '#carToolBar'  //头部工具栏
             , height: 'full-250'
@@ -235,9 +236,9 @@
         //模糊查询
         $("#doSearch").click(function () {
             var params = $("#searchFrm").serialize();
-            alert(params);
+            // alert(params);
             tableIns.reload({
-                url: "${ctx}/car/loadAllCar.action?" + params,
+                url: "${ctx}/business/car?method=loadAll&" + params,
                 curr: 1
             })
 
@@ -263,7 +264,7 @@
             console.log(data);
             if (obj.event === 'del') {
                 layer.confirm('真的删除行么?', function (index) {
-                    $.post("${ctx}/car/deleteCar.action?carnumber=" + data.carnumber, function (res) {
+                    $.post("${ctx}/business/car?method=deleteCar&carnumber=" + data.carnumber, function (res) {
                         layer.msg(res.msg);
                         //刷新数据 表格
                         tableIns.reload();
@@ -297,7 +298,7 @@
                     $("#carimg").val("images/defaultImg.jpg");
                     //设置车牌号输入框为可修改
                     $("#carnumber").removeAttr("readonly");
-                    url = "${ctx}/car/addCar.action";
+                    url = "${ctx}/business/car?method=addCar";
                 }
 
             })
@@ -317,7 +318,7 @@
                     $("#showCarImg").attr('src', '${ctx}/file/downloadShowFile.action?path=' + data.carimg);
                     //设置车牌号的属性为只读
                     $("#carnumber").attr("readonly","readonly");
-                    url = "${ctx}/car/updateCar.action";
+                    url = "${ctx}/business/car?method=updateCar";
                 }
             })
         }
@@ -348,7 +349,7 @@
                 }
             });
             layer.confirm('真的删除所有选中行么?', function (index) {
-                $.post("${ctx}/car/deleteBatchCar.action", params, function (res) {
+                $.post("${ctx}/business/car?method=deleteBatchCar",params, function (res) {
                     layer.msg(res.msg);
                     //刷新数据 表格
                     tableIns.reload();

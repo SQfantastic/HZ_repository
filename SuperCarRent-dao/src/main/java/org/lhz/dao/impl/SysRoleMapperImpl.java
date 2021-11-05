@@ -2,6 +2,7 @@ package org.lhz.dao.impl;
 
 import org.apache.commons.dbutils.QueryRunner;
 import org.apache.commons.dbutils.handlers.BeanListHandler;
+import org.apache.commons.dbutils.handlers.ScalarHandler;
 import org.lhz.dao.SysRoleMapper;
 import org.lhz.entity.SysMenu;
 import org.lhz.entity.SysRole;
@@ -157,6 +158,25 @@ public class SysRoleMapperImpl implements SysRoleMapper {
             e.printStackTrace();
         }
         return -1;
+    }
+
+    /**
+     * Infor: 查询总菜单数
+     * @param
+     * @return : java.lang.Long
+     * @author : LHZ
+     * @date : 2021/11/4 22:46
+     */
+    @Override
+    public Long getTotal() {
+        QueryRunner runner = new QueryRunner(DruidUtil.getDataSource());
+        try {
+            String sql = "select count(*) from sys_role";
+            return runner.query(sql,new ScalarHandler<>());
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 
     /**

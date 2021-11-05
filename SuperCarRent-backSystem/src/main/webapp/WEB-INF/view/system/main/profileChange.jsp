@@ -1,17 +1,10 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-<%@ taglib prefix="C" uri="http://java.sun.com/jsp/jstl/core" %>
-<%--
-  Created by IntelliJ IDEA.
-  User: 25760
-  Date: 2019/12/19
-  Time: 19:52
-  To change this template use File | Settings | File Templates.
---%>
+<c:set var="ctx" value="${pageContext.request.contextPath}"/>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <html>
 <head>
     <meta charset="utf-8">
-    <title>密码修改页面</title>
+    <title>信息修改页面</title>
     <meta name="renderer" content="webkit">
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
     <meta http-equiv="Access-Control-Allow-Origin" content="*">
@@ -99,13 +92,13 @@
         var form = layui.form;
         var $ = layui.jquery;
 
-        $.post("${ctx}/user/loadProfile.action",function(obj){
+        $.post("${ctx}/system/change?method=loadProfile",function(obj){
            form.val("changeProfileFrm",obj);
         });
 
         form.on('submit(doSubmit)', function () {
             var params = $("#changeProfileFrm").serialize();
-            $.post("${ctx}/user/updateUser.action", params, function (obj) {
+            $.post("${ctx}/system/change?method=updateProfile&"+ params, function (obj) {
                 layer.msg(obj.msg);
             });
             return false; //阻止表单跳转。如果需要表单跳转，去掉这段即可。

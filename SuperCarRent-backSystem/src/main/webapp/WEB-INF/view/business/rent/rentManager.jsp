@@ -1,9 +1,6 @@
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%--
-  Created by IntelliJ IDEA.
-  Rent: 25760
-  Date: 2019/12/6
-  Time: 15:59
-  To change this template use File | Settings | File Templates.
+  出租单管理
 --%>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <c:set var="ctx" value="${pageContext.request.contextPath}"/>
@@ -12,7 +9,7 @@
 <head>
     <meta charset="utf-8">
     <link rel="stylesheet" href="${ctx}/resources/layui/css/layui.css">
-    <link rel="stylesheet" href="${ctx }/resources/css/public.css" media="all"/>
+    <link rel="stylesheet" href="${ctx}/resources/css/public.css" media="all"/>
 </head>
 <body class="childrenBody">
 
@@ -85,13 +82,10 @@
 <table class="layui-hide" id="rentTable" lay-filter="rentTable"></table>
 <div style="display: none" id="rentToolBar">
 </div>
-<script type="text/html" id="rentBar">
-    {{#  if(d.rentflag ==1){ }}
-    {{#  } else { }}
+<div style="display: none" id="rentBar">
     <a class="layui-btn layui-btn-xs" lay-event="edit">编辑</a>
     <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>
-    {{#  } }}
-</script>
+</div>
 <%--数据表格结束--%>
 
 
@@ -145,7 +139,7 @@
             <div class="layui-inline">
                 <label class="layui-form-label">出租价格:</label>
                 <div class="layui-input-inline">
-                    <input type="text" name="price" autocomplete="off" lay-verify="required|number"
+                    <input type="text" name="price" autocomplete="off" lay-verify="required|number" readonly="readonly"
                            class="layui-input">
                 </div>
             </div>
@@ -210,34 +204,35 @@
 
         tableIns = table.render({
             elem: '#rentTable'    //渲染的目标数据
-            , url: '${ctx}/rent/loadAllRent.action'  //数据接口
+            , url: '${ctx}/business/rent?method=checkRentSingle'  //数据接口
             , title: '出租单数据表'  //数据导出来时的标题
             , toolbar: '#rentToolBar'  //头部工具栏
             , height: 'full-250'
             , cols: [[   //列表数据
-                {field: 'rentid', title: '出租单号', align: 'center', width: '280'}
-                , {field: 'identity', title: '身份证号', align: 'center', width: '180'}
-                , {field: 'carnumber', title: '车牌号', align: 'center', width: '150'}
+                {field: 'rentid', title: '出租单号', align: 'center', width: '170'}
+                , {field: 'identity', title: '身份证号', align: 'center', width: '175'}
+                , {field: 'carnumber', title: '车牌号', align: 'center', width: '100'}
                 , {
-                    field: 'rentflag', title: '出租单状态', align: 'center', width: '120', templet: function (d) {
+                    field: 'rentflag', title: '出租单状态', align: 'center', width: '100', templet: function (d) {
                         return d.rentflag == '1' ? '<font color=blue>已归还</font>' : '<font color=red>未归还</font>';
                     }
                 }
-                , {field: 'begindate', title: '起租时间', align: 'center', width: '180'}
-                , {field: 'returndate', title: '还车时间', align: 'center', width: '180'}
-                , {field: 'price', title: '出租价格', align: 'center', width: '120'}
-                , {field: 'opername', title: '操作员', align: 'center', width: '120'}
-                , {field: 'createtime', title: '录入时间', align: 'center', width: '180'}
+                , {field: 'begindate', title: '起租时间', align: 'center', width: '160'}
+                , {field: 'returndate', title: '还车时间', align: 'center', width: '160'}
+                , {field: 'price', title: '出租价格', align: 'center', width: '90'}
+                , {field: 'opername', title: '操作员', align: 'center', width: '100'}
+                , {field: 'createtime', title: '录入时间', align: 'center', width: '160'}
                 , {fixed: 'right', title: '操作', toolbar: '#rentBar', width: '150', align: 'center'}
             ]]
             , page: true
-            , done: function (data, curr, count) {
-                if (data.data.length == 0 && curr != 1) {
+            , done: function (res, curr, count) {
+                //判断当前页码是否是大于1并且当前页的数据量为0
+                if (curr > 1 && res.data.length == 0) {
+                    var pageValue = curr - 1;
+                    //刷新数据表格的数据
                     tableIns.reload({
-                        page: {
-                            curr: curr - 1
-                        }
-                    })
+                        page: {curr: pageValue}
+                    });
                 }
             }
         });
@@ -246,12 +241,11 @@
         $("#doSearch").click(function () {
             var params = $("#searchFrm").serialize();
             tableIns.reload({
-                url: "${ctx}/rent/loadAllRent.action?" + params,
+                url: "${ctx}/business/rent?method=checkRentSingle&" + params,
                 curr: 1
             })
 
         });
-
 
         //监听行工具事件
         table.on('tool(rentTable)', function (obj) {
@@ -259,7 +253,7 @@
             console.log(data);
             if (obj.event === 'del') {
                 layer.confirm('真的删除行么?', function (index) {
-                    $.post("${ctx}/rent/deleteRent.action?rentid=" + data.rentid, function (res) {
+                    $.post("${ctx}/business/rent?method=delRentSingle&rentid=" + data.rentid, function (res) {
                         layer.msg(res.msg);
                         //刷新数据 表格
                         tableIns.reload();
@@ -292,9 +286,10 @@
 
         //监听保存事件
         form.on("submit(doSubmit)", function (obj) {
+            console.log("111")
             //序列化表单数据
             var params = $("#addRentForm").serialize();
-            $.post(url, params, function (obj) {
+            $.post("${ctx}/business/rent?method=updateRentSingle", params, function (obj) {
                 layer.msg(obj.msg);
                 //关闭弹出层
                 layer.close(mainIndex);

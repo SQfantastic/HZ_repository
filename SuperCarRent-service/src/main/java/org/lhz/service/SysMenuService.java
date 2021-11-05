@@ -21,4 +21,6 @@ public interface SysMenuService {
     int updateMenu(SysMenu sysMenu);//更新菜单
 
     boolean insertMenuByRoleId(Integer roleid,String ids);//根据校色id更新角色信息
+
+    Long getTotal();//获取总数
 }

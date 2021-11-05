@@ -29,7 +29,14 @@ public class PageControllerBusiness  extends HttpServlet {
             case"toCheckCarManagerPage":
                 toCheckCarManagerPage(req,resp);
                 break;
+            case"toCheckManagerPage":
+                toCheckManagerPage(req,resp);
+                break;
         }
+    }
+
+    private void toCheckManagerPage(HttpServletRequest req, HttpServletResponse resp)  throws ServletException, IOException  {
+        req.getRequestDispatcher("WEB-INF/view/business/check/checkManager.jsp").forward(req,resp);
     }
 
     private void toCheckCarManagerPage(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {

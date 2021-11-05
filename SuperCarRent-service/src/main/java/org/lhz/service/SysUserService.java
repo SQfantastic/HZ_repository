@@ -1,7 +1,6 @@
 package org.lhz.service;
 
 
-import org.lhz.entity.SysRole;
 import org.lhz.entity.SysUser;
 import org.lhz.vo.SysUserVo;
 
@@ -21,4 +20,8 @@ public interface SysUserService {
     int updateUser(SysUser sysUser);
 
     int resetUserPwd(Integer userid);
+
+    SysUser findUserByUserId(Integer userid);
+
+    Long getTotal();
 }

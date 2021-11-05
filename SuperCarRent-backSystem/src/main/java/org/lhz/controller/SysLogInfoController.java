@@ -82,9 +82,8 @@ public class SysLogInfoController extends HttpServlet {
         //调用service层方法
         List<SysLogInfo> sysLogInfoListList= sysLogInfoService.findAllSysLoInfoList(sysLogInfoVo);
         //设置分页参数
-        PageHelper.startPage(sysLogInfoVo.getPage(), sysLogInfoVo.getLimit());
-        PageInfo<SysLogInfo> pageInfo = new PageInfo<>(sysLogInfoListList);
-        DataGridView dataGridView = new DataGridView(pageInfo.getTotal(), pageInfo.getList());
+        Long total = sysLogInfoService.getTotal();
+        DataGridView dataGridView = new DataGridView(total, sysLogInfoListList);
         //写出数据
         resp.setContentType("application/json;charset=utf-8");
         PrintWriter writer = resp.getWriter();

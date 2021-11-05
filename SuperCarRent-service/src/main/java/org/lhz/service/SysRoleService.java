@@ -20,4 +20,6 @@ public interface SysRoleService {
     List<SysRole> findRoleListByUserId(Integer userid);//通过该用户id查询到该用户所拥有的角色
 
     boolean insertRoleByUserId(Integer userid, String roleids);//通过用户id插入角色信息
+
+    Long getTotal();//获取总数
 }

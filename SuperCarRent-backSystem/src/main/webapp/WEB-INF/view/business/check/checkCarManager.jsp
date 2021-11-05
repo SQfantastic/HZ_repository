@@ -1,18 +1,12 @@
-<%--
-  Created by IntelliJ IDEA.
-  Car: 25760
-  Date: 2019/12/6
-  Time: 15:59
-  To change this template use File | Settings | File Templates.
---%>
-<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" isELIgnored="false" %>
 <c:set var="ctx" value="${pageContext.request.contextPath}"/>
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8">
     <link rel="stylesheet" href="${ctx}/resources/layui/css/layui.css">
-    <link rel="stylesheet" href="${ctx }/resources/css/public.css" media="all"/>
+    <link rel="stylesheet" href="${ctx}/resources/css/public.css" media="all"/>
 </head>
 <body class="childrenBody">
 
@@ -184,8 +178,8 @@
         //模糊查询
         $("#doSearch").click(function () {
             var rentid = $("#search_rentid").val().trim();
-            $.post("${ctx}/check/checkRentIsExist.action", {rentid: rentid}, function (obj) {
-                alert(obj);
+            $.post("${ctx}/business/check?method=checkRentIsExist", {rentid: rentid}, function (obj) {
+                // alert(obj);
                 if (obj == '') {
                     layer.msg("您输入的出租单号不存在，请检查后重新输入！");
                     $("#content").hide();
@@ -194,6 +188,7 @@
                         layer.msg("您输入的出租单号相关车辆已经归还，请检查后重新输入！");
                         $("#content").hide();
                     } else {
+
                         initCheckFormData(rentid);
                         $("#content").show();
                     }
@@ -202,7 +197,7 @@
         });
 
         function initCheckFormData(rentid) {
-            $.post("${ctx}/check/initCheckFormData.action", {rentid: rentid}, function (obj) {
+            $.post("${ctx}/business/check?method=initCheckFormData", {rentid: rentid}, function (obj) {
                 //检查单
                 var check = obj.check;
                 form.val("checkFrm", check);
@@ -242,7 +237,7 @@
         //保存
         form.on("submit(doSubmit)", function () {
             var params = $("#checkFrm").serialize();
-            $.post("${ctx}/check/addCheck.action", params, function (obj) {
+            $.post("${ctx}/business/check?method=updateCheck", params, function (obj) {
                 layer.msg(obj.msg);
                 $("#content").hide();
             });
